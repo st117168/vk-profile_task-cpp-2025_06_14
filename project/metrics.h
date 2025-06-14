@@ -24,7 +24,7 @@ public:
     virtual bool hasValue() const = 0;
 };
 
-// Шаблонная метафункция для проверки строк
+// РЁР°Р±Р»РѕРЅРЅР°СЏ РјРµС‚Р°С„СѓРЅРєС†РёСЏ РґР»СЏ РїСЂРѕРІРµСЂРєРё СЃС‚СЂРѕРє
 template<typename> struct is_string : std::false_type {};
 template<> struct is_string<std::string> : std::true_type {};
 
@@ -89,7 +89,7 @@ public:
     void flushToFile(const std::string& filename) {
         std::vector<std::pair<std::string, std::unique_ptr<MetricValue>>> snapshot;
 
-        // Собираем снимок метрик
+        // РЎРѕР±РёСЂР°РµРј СЃРЅРёРјРѕРє РјРµС‚СЂРёРє
         {
             std::lock_guard<std::mutex> lock(mutex_);
             for (auto& metric_pair : metrics_) {
@@ -105,7 +105,7 @@ public:
         std::ofstream file(filename, std::ios_base::app);
         if (!file.is_open()) return;
 
-        // Форматирование времени
+        // Р¤РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµ РІСЂРµРјРµРЅРё
         auto now = std::chrono::system_clock::now();
         auto now_time = std::chrono::system_clock::to_time_t(now);
         auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -120,14 +120,14 @@ public:
 
         file << std::put_time(&tm_struct, "%Y-%m-%d %H:%M:%S");
 
-        // Сортировка по имени метрики
+        // РЎРѕСЂС‚РёСЂРѕРІРєР° РїРѕ РёРјРµРЅРё РјРµС‚СЂРёРєРё
         std::sort(snapshot.begin(), snapshot.end(),
             [](const std::pair<std::string, std::unique_ptr<MetricValue>>& a,
                 const std::pair<std::string, std::unique_ptr<MetricValue>>& b) {
                     return a.first < b.first;
             });
 
-        // Запись метрик
+        // Р—Р°РїРёСЃСЊ РјРµС‚СЂРёРє
         for (const auto& metric_pair : snapshot) {
             file << " \"" << metric_pair.first << "\" " << metric_pair.second->toString();
         }

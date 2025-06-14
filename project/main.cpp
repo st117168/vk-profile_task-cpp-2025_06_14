@@ -1,26 +1,26 @@
 #include "metrics.h"
 #include <thread>
 
-// Блокирует выполнение, пока не нажат Enter
+// Р‘Р»РѕРєРёСЂСѓРµС‚ РІС‹РїРѕР»РЅРµРЅРёРµ, РїРѕРєР° РЅРµ РЅР°Р¶Р°С‚ Enter
 void waitForExitKey() {
     std::cout << "Press Enter to stop the program..." << std::endl;
     std::cin.get(); 
 }
 
-// Метрика загрузки cpu
+// РњРµС‚СЂРёРєР° Р·Р°РіСЂСѓР·РєРё cpu
 double cpuLoad()
 {
     int cores_count = std::thread::hardware_concurrency();
     return std::round(static_cast<double>(rand()) / RAND_MAX * cores_count * 100.0) / 100.0;
 }
 
-// Метрика статуса сервера (string)
+// РњРµС‚СЂРёРєР° СЃС‚Р°С‚СѓСЃР° СЃРµСЂРІРµСЂР° (string)
 std::string getRandomServerStatus() {
     const char* statuses[] = { "OK", "WARNING", "ERROR", "RECOVERING" };
     return statuses[rand() % 4];
 }
 
-// Метрика времени ответа (double 0.1-500.0 ms)
+// РњРµС‚СЂРёРєР° РІСЂРµРјРµРЅРё РѕС‚РІРµС‚Р° (double 0.1-500.0 ms)
 double getRandomResponseTime() {
     return 0.1 + static_cast<double>(rand()) / (RAND_MAX / 499.9);
 }
@@ -30,7 +30,7 @@ int main() {
 
     std::atomic<bool> stopFlag{ false };
 
-    // Поток для обработки клавиш
+    // РџРѕС‚РѕРє РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё РєР»Р°РІРёС€
     std::thread keyThread([&stopFlag, &metricsWriter]() {
         std::cout << "Press Enter to exit..." << std::endl;
         while (!stopFlag) {
@@ -56,7 +56,7 @@ int main() {
 
         //std::cout << a << " " << httpRequests << " " << status << " " << resp<< '\n';
 
-        // Имитация работы системы (метрики приходят в рандомные моменты)
+        // РРјРёС‚Р°С†РёСЏ СЂР°Р±РѕС‚С‹ СЃРёСЃС‚РµРјС‹ (РјРµС‚СЂРёРєРё РїСЂРёС…РѕРґСЏС‚ РІ СЂР°РЅРґРѕРјРЅС‹Рµ РјРѕРјРµРЅС‚С‹)
         std::this_thread::sleep_for(std::chrono::milliseconds(200 + rand() % 800));
     }
 
